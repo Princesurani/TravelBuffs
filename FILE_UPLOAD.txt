@@ -1,0 +1,31 @@
+FILE UPLOAD
+
+
+
+
+if(isset($_FILES['certificate']))
+	{
+		$errors=array();
+		$fname=$_FILES['certificate']['name'];
+		$fsize=$_FILES['certificate']['size'];
+		$ftempname=$_FILES['certificate']['tmp_name'];
+		$ftype=$_FILES['certificate']['type'];  // mime type image/jpg, image/png, text/html
+		$fextension=strtolower(end(explode('.',$_FILES['certificate']['name'])));
+		$extension=array("jpeg","jpg","pdf");
+		if(in_array($fextension,$extension)===false){
+			$errors[]="this extension are not allowed , please choose jpeg or jpg or pdf files";
+		}
+		if($fsize >= 2097152)
+		{
+			$errors[]= "Files must be less than or equal to 2MB";
+		}
+		if(empty($errors)==true)
+		{
+			move_uploaded_file($ftempname, "docs/".$dl."_certi.".$fextension);
+			$file1="docs/".$dl."_certi.".$fextension;
+		}
+		else{
+			print_r($errors);
+			die("Error....");
+		}
+	}

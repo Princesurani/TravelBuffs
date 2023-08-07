@@ -1,0 +1,377 @@
+AJAX USED HERE
+
+
+
+<?php
+include "dbconnect.php";
+$con=getconnection();
+if(isset($_POST["btnsubmit"]))
+{
+	$sname=$_POST["storename"];
+	$oname=$_POST["ownername"];
+	$mail=$_POST["email"];
+	$cty=$_POST["city"];
+	$st=$_POST["state"];
+	$pno=$_POST["phone"];
+	$mob=$_POST["mobile"];
+	$gst=$_POST["gst"];
+	$add=$_POST["address"];
+	$dl=$_POST["dl"];
+	$uname=$_POST["username"];
+	$pass=$_POST["password"];
+	$file1="";
+	$file2="";
+	$query1="select * from storekeeper_tbl where gst_no=?";
+	$result1=$con->prepare($query1);
+	$result1->bind_param("s",$gst);
+	$result1->execute();
+	$result1->store_result();
+	if($result1->num_rows>0)
+	{
+		echo "<script type=text/javascript>alert('Gst No. is already registered.');</script>";
+		
+	}
+	else
+	{
+	$query1="select * from storekeeper_tbl where dl_no=?";
+	$result1=$con->prepare($query1);
+	$result1->bind_param("s",$dl);
+	$result1->execute();
+	$result1->store_result();
+	if($result1->num_rows>0)
+	{
+		echo "<script type=text/javascript>alert('Dl No. is already registered.');</script>";
+		
+	}
+	else
+	{
+	
+	if(isset($_FILES['certificate']))
+	{
+		$errors=array();
+		$fname=$_FILES['certificate']['name'];
+		$fsize=$_FILES['certificate']['size'];
+		$ftempname=$_FILES['certificate']['tmp_name'];
+		$ftype=$_FILES['certificate']['type'];  // mime type image/jpg, image/png, text/html
+		$fextension=strtolower(end(explode('.',$_FILES['certificate']['name'])));
+		$extension=array("jpeg","jpg","pdf");
+		if(in_array($fextension,$extension)===false){
+			$errors[]="this extension are not allowed , please choose jpeg or jpg or pdf files";
+		}
+		if($fsize >= 2097152)
+		{
+			$errors[]= "Files must be less than or equal to 2MB";
+		}
+		if(empty($errors)==true)
+		{
+			move_uploaded_file($ftempname, "docs/".$dl."_certi.".$fextension);
+			$file1="docs/".$dl."_certi.".$fextension;
+		}
+		else{
+			print_r($errors);
+			die("Error....");
+		}
+	}
+	if(isset($_FILES['license']))
+	{
+		$errors=array();
+		$lname=$_FILES['license']['name'];
+		$lsize=$_FILES['license']['size'];
+		$ltempname=$_FILES['license']['tmp_name'];
+		$ltype=$_FILES['license']['type'];
+		$lextension=strtolower(end(explode('.',$_FILES['license']['name'])));
+		$extension=array("jpeg","jpg","pdf");
+		if(in_array($lextension, $extension)=== false)
+		{
+			$errors[]="this extension are not allowed , please choose jpeg or jpg or pdf files";
+		}
+		if($lsize > 2097152) // 2 mb= 2x1024 kb= 2x1024x1024 bytes=2097152 bytes
+		{
+			$errors[]="Files must be less than or equal to 2MB";
+		}
+		if(empty($errors)==true)
+		{
+			move_uploaded_file($ltempname,"docs/".$dl."_license.".$lextension);
+			$file2="docs/".$dl."_license.".$lextension;
+		}
+		else
+		{
+			print_r($errors);
+			die("errors....");
+
+		}
+	}
+	$status="Pending";
+
+	$query="insert into storekeeper_tbl values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+	$result=$con->prepare($query);
+	$result->bind_param("sssssssssssssss",$sname,$oname,$mail,$cty,$st,$pno,$mob,$gst,$add,$file1,$dl,$file2,$uname,$pass,$status);
+	$result->execute();
+	$result->store_result();
+	if($result->affected_rows>0)
+	{
+		echo "<script type='text/javascript'>alert('Registration is Successfull');</script>";
+	}
+	else
+	{
+		echo "<script type='text/javascript'>alert('Registration is not Successfull');</script>";
+		
+	}
+	$con->close();
+	}
+}
+}
+ ?>
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<title>Medicament</title>
+		<link rel="icon" href="images/title.ico" type="image/icon type">
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<link rel="stylesheet" href="assets/css/main.css" />
+		<script type="text/javascript">
+
+												function fetchstate()
+																{
+
+															$.ajax({
+																url:"registerback.php",
+																type:"post",
+																data: {fetchstate:"yes"},
+																success:function(response)
+																{
+																	var arr=$.parseJSON(response);
+																	if(Object.keys(arr).length>1)
+																	{
+																			var mydata="<option value=''>-Select state-</option>";
+																			for(var k=0;k<Object.keys(arr).length/2;k++)
+																			{
+																				id=arr["id"+(k+1)];
+																				nm=arr["nm"+(k+1)];			
+																					mydata+="<option value='"+id+"'>"+nm+"</option>";
+																			}
+																			state.innerHTML=mydata;
+
+																	}
+																	else
+																	{
+																		alert(arr["msg"]);
+																	}
+																	
+																}
+															});
+
+														}
+														function fetchcity() {
+															var st=state.value;
+															$.ajax({
+																url:"registerback.php",
+																type:"post",
+																data: {fetchcity:"yes",state:st},
+																success:function(response)
+																{
+																	
+																	var arr=$.parseJSON(response);
+																	if(Object.keys(arr).length>1)
+																	{
+																			var mydata="<option value=''>-Select City-</option>";
+																			for(var k=0;k<Object.keys(arr).length/2;k++)
+																			{
+																				id=arr["id"+(k+1)];
+																				nm=arr["nm"+(k+1)];			
+																					mydata+="<option value='"+id+"'>"+nm+"</option>";
+																			}
+																			city.innerHTML=mydata;
+
+																	}
+																	else										
+																	{
+																		alert(arr["msg"]);
+																	}
+																	
+																}
+															});
+														}
+
+			function checkpass()
+			{
+				if(document.regform.password.value.length<8)
+				{
+					alert("Password must contain atleast 8 characters");
+					document.regform.password.focus();
+					return false;
+				}
+				else if(document.regform.password.value!=document.regform.confirmpassword.value)
+				{
+					alert("Confirm Password is not matched");
+					document.regform.confirmpassword.focus();
+					return false;
+				}
+				else
+				{
+					return true;
+				}
+			}	
+
+		</script>
+	</head>
+	<body class="is-preload" onload="fetchstate();">
+
+		<!-- Wrapper -->
+			<div id="wrapper">
+
+				<!-- Main -->
+					<div id="main">
+						<div class="inner">
+
+							<!-- Header -->
+								<header id="header">
+									<strong style="font-size: 20px;">Register Page</strong> </a>									
+								</header>
+
+							
+										<div class="row gtr-200">
+							
+											<div class="col-6 col-12-medium">
+
+											
+
+												<!-- Form -->
+													<br><br>
+														<form name="regform" enctype="multipart/form-data" method="post" action="" onsubmit="return checkpass();">
+														<div class="row gtr-uniform">
+															<div class="col-6 col-12-xsmall">
+																<b>Store Name :</b>
+																<input type="text" name="storename" id="name" value="" placeholder="Store-Name" required />
+															</div>
+															<div class="col-6 col-12-xsmall">
+																<b>Owner Name :</b>
+																<input type="text" name="ownername" id="ownername" value="" placeholder="Owner Name" required/>
+															</div>
+															<div class="col-6 col-12-xsmall">
+																<b>Email-Id :</b>
+																<input type="email" name="email" id="email" value="" placeholder="Email" required/>
+															</div>
+																	<div class="col-6 col-12-xsmall">
+																<b>State:</b>
+																<select name="state" id="state" required="" onchange="fetchcity();">
+																	<option value="">Select State</option>
+																		
+																</select>
+															</div>
+															<div class="col-6 col-12-xsmall">
+																<b>City :</b>
+																<select name="city" id="city" required="">
+																	<option value="">Select City</option>
+																</select>
+															</div>
+																	<div class="col-6 col-12-xsmall">
+																		<b>Phone no. :</b>
+																<input type="text" name="phone" id="contact1" value="" placeholder="Phone (00000-0000000)" required pattern="\d{5}([- ]*)\d{6}" />
+															</div>
+															<div class="col-6 col-12-xsmall">
+																<b>Mobile No. :</b>
+																<input type="text" name="mobile" id="mobileno" value="" placeholder="Mobile No." required pattern="[9876][0-9]{9}"/>
+															</div>
+																<div class="col-6 col-12-xsmall">
+																<b>GST NO :</b>
+																<input type="text" name="gst" id="gst" placeholder="GST NO" rows="6" required pattern="\d{2}[A-Z]{5}\d{4}[A-Z]{1}[A-Z\d]{1}[Z]{1}[A-Z\d]{1}">
+													</div>
+															
+													
+															<!-- Break -->
+															<div class="col-12">
+																<b>Address :</b>
+																<textarea name="address" id="address" placeholder="Address" rows="3" required></textarea>
+															</div>
+															<div class="col-12">
+																<b> PHARMACY CERTIFICATE.</b>
+																<input type="file" name="certificate" id="certificate" placeholder="PHARMACY certificate" rows="6" required><br>File Size must not greater than 2 MB. And types must be jpg or pdf.
+															</div>
+															<div class="col-12">
+																<b>DL NO :</b>
+																<input type="text" name="dl" id="dl" placeholder="DL NO." rows="6" required="">
+													</div>
+															<div class="col-12">
+																<b> MEDICAL-LINCENSE.</b><br>
+																
+																<input type="file" name="license" id="license" placeholder="license" rows="6" required>
+															</div>
+															<div class="col-12">
+																<b>User Name:</b>
+																<input type="text" name="username" id="username" value="" placeholder="User Name" required/>
+															</div>
+															<div class="col-6 col-12-xsmall">
+																<b>Password:</b>
+																<input type="Password" name="password" id="password" value="" placeholder="Password" required/>
+															</div>
+															
+															<div class="col-6 col-12-xsmall">
+																<b>Confirm Password:</b>
+																<input type="password" name="confirmpassword" id="confirmpassword" value="" placeholder="Confirm Password" required/>
+															</div>
+															
+															<!-- Break -->
+															<div class="col-12">
+																<ul class="actions">
+																	<li><input type="submit"  name="btnsubmit" value="Submit" class="primary"   /></li>
+																	
+																</ul>
+															</div>
+														</div>
+													</form>
+
+											
+
+											</div>
+										</div>
+
+								
+
+						</div>
+					</div>
+
+				<!-- Sidebar -->
+					<div id="sidebar">
+						<div class="inner">
+
+							
+
+							<!-- Menu -->
+								<nav id="menu">
+									<header class="major">
+										<h2>Menu</h2>
+									</header>
+									<ul>
+										<li><a href="index.php">Homepage</a></li>
+										<li><a href="contactus.php">Contact Us</a></li>
+										<li><a href="aboutus.php">About Us</a></li>
+										
+										<li><a href="login.php">Sign In</a></li>
+										
+									</ul>
+								</nav>
+
+							<!-- Section -->
+								
+							<!-- Footer -->
+								<footer id="footer">
+									<p class="copyright">&copy;Medicament@2020 .All rights reserved.
+									</p>
+								</footer>
+
+						</div>
+					</div>
+
+			</div>
+
+		<!-- Scripts -->
+			<script src="assets/js/jquery.min.js"></script>
+			<script src="assets/js/browser.min.js"></script>
+			<script src="assets/js/breakpoints.min.js"></script>
+			<script src="assets/js/util.js"></script>
+			<script src="assets/js/main.js"></script>
+
+	</body>
+</html>

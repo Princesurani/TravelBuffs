@@ -1,0 +1,1014 @@
+INSERT FROM ADMIN SIDE CODE
+
+
+
+
+<?php
+session_start();
+if(!isset($_SESSION["sname"]))
+{
+	header('location: login.php');
+	exit();
+}
+include 'dbconnect.php';
+$con=getconnection();
+$sup=0;
+if(isset($_POST["btnsave"]) && $_POST["btnsave"]=="Update")
+{
+	$batchno=$_POST['bid'];
+	$medname=$_POST['mname'];
+	$t=$_POST['medtype'];
+	$comname=$_POST['comname'];
+	$gname=$_POST['gname'];
+	$unit=$_POST['unit'];
+	$mrp=$_POST['mrp'];
+	$qyt=$_POST['qyt'];
+	$rate=$_POST['rate'];
+	$dis=$_POST['dis'];
+	$gst=$_POST['gst'];
+	$amount=$_POST['amount'];
+	$mdate=$_POST['mdate'];
+	$expdate=$_POST['expdate'];
+	$details=$_POST['details'];
+	$sup=$_POST['supplier'];
+	$result=null;
+	if($t=="Tablet" || $t=="Capsules")
+	{
+	$bx=$_POST['box']. " Box";
+	$s=$_POST['strips']. " Strips";
+	$tab=$_POST['tablets']. " Tablets";
+	$query="update unit_conversion set unit1=?,unit2=?,unit3=? where batch_no=? and storekeeper_id=?";
+	$result=$con->prepare($query);
+	$result->bind_param("sssss",$bx,$s,$tab,$batchno,$_SESSION["sname"]);
+	}
+	else if($t=="Syrup" || $t=="Spary" || $t=="Gell" || $t=="Lotion")
+	{
+	$b=$_POST['bottle']. " Bottle";
+	$ML=$_POST['ml']. " Ml";
+	$query="update unit_conversion set unit1=?,unit2=? where batch_no=? and storekeeper_id=?";
+	$result=$con->prepare($query);
+	$result->bind_param("ssss",$b,$ML,$batchno,$_SESSION["sname"]);
+	}
+	else if($t=="Powder")
+	{
+		$b=$_POST['pow']. " Bottle";
+		$g=$_POST['gram']. " Gram"; 
+	$query="update unit_conversion set unit1=?,unit2=? where batch_no=? and storekeeper_id=?";
+	$result=$con->prepare($query);
+	$result->bind_param("ssss",$b,$g,$batchno,$_SESSION["sname"]);
+	}
+	else
+	{
+	$bx=$_POST['boxinjection']. " Box";	
+	$p=$_POST['piecesinjection']. " Pieces";
+	$query="update unit_conversion set unit1=?,unit2=? where batch_no=? and storekeeper_id=?";
+	$result=$con->prepare($query);
+	$result->bind_param("ssss",$bx,$p,$batchno,$_SESSION["sname"]);
+	}
+
+	$result->execute();
+	$result->store_result();
+	$n=$result->affected_rows;
+			$query1="update medicine_tbl set medicine_name=?,type=?,company_name=?,genric_name=?,unit=?,mrp=?,quantity=?,rate=?,discount=?,gst=?,amount=?,manufacture_date=?,expiry_date=?,details=?,supplier=? where batch_no=? and storekeeper_id=?";
+			$result1=$con->prepare($query1);
+			$result1->bind_param("sssssdiddddssssss",$medname,$t,$comname,$gname,$unit,$mrp,$qyt,$rate,$dis,$gst,$amount,$mdate,$expdate,$details,$sup,$batchno,$_SESSION["sname"]);
+			$result1->execute();
+			$result1->store_result();
+			if(($n+$result1->affected_rows)>0)
+			{
+			echo "<script type=text/javascript>alert('Record Updated Sucessfully');</script>";
+			unset($batchno);
+			unset($medname);
+			unset($t);
+			unset($comname);
+			unset($gname);
+			unset($unit);
+			unset($mrp);
+			unset($qyt);
+			unset($sup);
+			unset($rate);
+			unset($dis);
+			unset($gst);
+			unset($amount);
+			unset($mdate);
+			unset($expdate);
+			unset($details);		
+
+			//header("location:managestock.php");
+			}
+			else
+			{
+			echo "<script type=text/javascript>alert('Record not Updated Sucessfully');</script>";
+				
+			}
+
+
+	}
+
+
+
+if(isset($_POST["btnsave"]) && $_POST["btnsave"]=="Save")
+{
+	$batchno=$_POST['bid'];
+	$medname=$_POST['mname'];
+	$t=$_POST['medtype'];
+	$comname=$_POST['comname'];
+	$gname=$_POST['gname'];
+	$unit=$_POST['unit'];
+	$mrp=$_POST['mrp'];
+	$qyt=$_POST['qyt'];
+	$rate=$_POST['rate'];
+	$dis=$_POST['dis'];
+	$gst=$_POST['gst'];
+	$amount=$_POST['amount'];
+	$mdate=$_POST['mdate'];
+	$expdate=$_POST['expdate'];
+	$sup=$_POST['supplier'];
+	$details=$_POST['details'];
+	$result=null;
+	if($t=="Tablet" || $t=="Capsules")
+	{
+	$bx=$_POST['box']. " Box";
+	$s=$_POST['strips']. " Strips";
+	$tab=$_POST['tablets']. " Tablets";
+	$query="insert into unit_conversion values(?,?,?,?,?)";
+	$result=$con->prepare($query);
+	$result->bind_param("sssss",$batchno,$bx,$s,$tab,$_SESSION["sname"]);
+	}
+	else if($t=="Syrup" || $t=="Spary" || $t=="Gell" || $t=="Lotion")
+	{
+	$b=$_POST['bottle']. " Bottle";
+	$ML=$_POST['ml']. " Ml";
+	$query="insert into unit_conversion(batch_no,unit1,unit2,storekeeper_id) values(?,?,?,?)";
+	$result=$con->prepare($query);
+	$result->bind_param("ssss",$batchno,$b,$ML,$_SESSION["sname"]);
+	}
+	else if($t=="Powder")
+	{
+		$b=$_POST['pow']. " Bottle";
+		$g=$_POST['gram']. " Gram"; 
+	$query="insert into unit_conversion(batch_no,unit1,unit2,storekeeper_id) values(?,?,?,?)";
+	$result=$con->prepare($query);
+	$result->bind_param("ssss",$batchno,$b,$g,$_SESSION["sname"]);
+	}
+	else
+	{
+	$bx=$_POST['boxinjection']. " Box";	
+	$p=$_POST['piecesinjection']. " Pieces";
+	$query="insert into unit_conversion(batch_no,unit1,unit2,storekeeper_id) values(?,?,?,?)";
+	$result=$con->prepare($query);
+	$result->bind_param("ssss",$batchno,$bx,$p,$_SESSION["sname"]);
+	}
+
+	$result->execute();
+	$result->store_result();
+	if ($result->affected_rows>0) {
+
+			$query1="insert into medicine_tbl values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+			$result1=$con->prepare($query1);
+			$result1->bind_param("ssssssdiddddsssss",$batchno,$medname,$t,$comname,$gname,$unit,$mrp,$qyt,$rate,$dis,$gst,$amount,$mdate,$expdate,$details,$_SESSION["sname"],$sup);
+			$result1->execute();
+			$result1->store_result();
+			if($result1->affected_rows>0)
+			{
+			echo "<script type=text/javascript>alert('Record inserted Sucessfully');</script>";
+			unset($batchno);
+			unset($medname);
+			unset($t);
+			unset($comname);
+			unset($gname);
+			unset($unit);
+			unset($mrp);
+			unset($qyt);
+			unset($rate);
+			unset($dis);
+			unset($gst);
+			unset($sup);
+			unset($amount);
+			unset($mdate);
+			unset($expdate);
+			unset($details);		
+			}
+			else
+			{
+			echo "<script type=text/javascript>alert('Record2 not inserted Sucessfully');</script>";
+				
+			}
+
+
+	}
+	else{
+		echo "<script type=text/javascript>alert('Record not inserted Sucessfully');</script>";
+	}
+}
+if(isset($_REQUEST["bno"]))
+{
+	// WHEN YOU EDIT DATA.
+	$query4="select * from medicine_tbl where batch_no=? and storekeeper_id=?";
+	$result4=$con->prepare($query4);
+	$result4->bind_param("ss",$_REQUEST["bno"],$_SESSION["sname"]);
+	$result4->execute();
+	$result4->bind_result($batchno,$medname,$t,$comname,$gname,$unit,$mrp,$qyt,$rate,$dis,$gst,$amount,$mdate,$expdate,$details,$store,$sup);
+		$result4->store_result();
+	if($result4->num_rows>0)
+	{
+		$result4->fetch();
+		$query5="select unit1,unit2,unit3 from unit_conversion where batch_no=? and storekeeper_id=?";
+		$result5=$con->prepare($query5);
+		$result5->bind_param("ss",$_REQUEST["bno"],$_SESSION["sname"]);
+		$result5->execute();
+		$result5->bind_result($u1,$u2,$u3);
+		$result5->store_result();
+		if($result5->num_rows>0)
+		{
+			$result5->fetch();
+			$unit1=current(explode(" ", $u1));
+			$unit2=current(explode(" ", $u2));
+			$unit3=current(explode(" ", $u3));
+		}
+
+	}
+}
+?>
+<!DOCTYPE HTML>
+<html>
+	<head>
+		<title>Medicament</title>
+		<link rel="icon" href="images/title.ico" type="image/icon type">
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+		<link rel="stylesheet" href="assets/css/main.css" />
+		<style type="text/css">
+			.mydate
+				 {
+  -moz-appearance: none;
+  -webkit-appearance: none;
+  -ms-appearance: none;
+  appearance: none;
+  background: #ffffff;
+  border-radius: 0.375em;
+  border: none;
+  border: solid 1px rgba(210, 215, 217, 0.75);
+  color: inherit;
+  display: block;
+  outline: 0;
+  padding: 0 1em;
+  height: 2.75em;
+  text-decoration: none;
+  width: 100%; }
+			
+			  .mydate:focus {
+    border-color: #f56a6a;
+    box-shadow: 0 0 0 1px #f56a6a; }
+		</style>
+	</head>
+	<body class="is-preload" onload="fetchsupplier(<?php echo $sup;?>);">
+
+		<!-- Wrapper -->
+			<div id="wrapper">
+
+				<!-- Main -->
+					<div id="main">
+						<div class="inner">
+									<script type="text/javascript">
+										function getdiscount(val)
+														{
+															document.medicine.dis.value=0;
+
+															if(val==true)
+															{
+															d1.style.display="inline";
+
+														
+															}
+															else
+															{
+																d1.style.display="none";
+															}
+														}
+															function getgst(val)
+														{
+															document.medicine.gst.value=0;
+															if(val==true)
+															{
+															d2.style.display="inline";
+												
+															}
+															else
+															{
+																d2.style.display="none";
+															}
+														}
+														function fetchsupplier(sid)
+														{
+															$.ajax({
+																url:"purchaseback.php",
+																type:"post",
+																data: {fetchsupplier : "yes"},
+																success:function(response)
+																{
+																	var arr=$.parseJSON(response);
+																	if(Object.keys(arr).length>1)
+																	{
+																			var mydata="<option value=''>-Select Supplier-</option>";
+																			for(var k=0;k<Object.keys(arr).length/2;k++)
+																			{
+																				id=arr["id"+(k+1)];
+																				nm=arr["nm"+(k+1)];
+																				if(sid==id)
+																				{
+																					mydata+="<option value='"+id+"' selected>"+nm+"</option>";
+																				}
+																				else
+																				{
+																					mydata+="<option value='"+id+"'>"+nm+"</option>";
+																				}
+																			}
+																			supplier.innerHTML=mydata;
+
+																	}
+																	else
+																	{
+																		alert(arr["msg"]);
+																	}
+																	
+																}
+															});
+
+														}
+														
+												function checkval()
+												{
+													var mdt=new Date();
+												var expdt=new Date();
+												mdt=document.medicine.mdate.value;
+												expdt=document.medicine.expdate.value;
+												
+												
+													if(document.medicine.discount.checked==true)
+													{
+														if(document.medicine.dis.value=="")
+														{
+															alert("Enter value in Discount");
+															document.medicine.dis.focus();
+															return false;	
+														}
+														else if(parseFloat(document.medicine.dis.value)>100)
+														{
+															alert("Enter value less than 100% in Discount");
+															document.medicine.dis.focus();
+															return false;	
+														}
+													}
+													if (document.medicine.gstcheck.checked==true) {
+
+														if(document.medicine.gst.value=="")
+														{
+															alert("Enter value in GST");
+															document.medicine.gst.focus();
+															return false;
+														}
+														if(parseFloat(document.medicine.gst.value)>100)
+														{
+
+															alert("Enter value less than 100% in GST");
+															document.medicine.gst.focus();
+															return false;
+														}
+													}
+													if(mdt>=expdt)
+													{
+														alert("Manufacture Date must be less then Expiry Date.");
+														document.medicine.mdate.focus();
+														return false;
+													}
+													
+														return true;
+													
+												}
+												
+											function selected()
+											{
+												t11.style.display="none";
+												t12.style.display="none";
+												t13.style.display="none";
+												t21.style.display="none";
+												t22.style.display="none";
+												t31.style.display="none";
+												t32.style.display="none";
+												t41.style.display="none";
+												t42.style.display="none";
+													
+												if(document.medicine.medtype.selectedIndex==1 || document.medicine.medtype.selectedIndex==2 )
+												{
+													t11.style.display="inline";
+													t12.style.display="inline";
+													t13.style.display="inline";
+													document.medicine.box.value="1";
+													document.medicine.tablets.value="";
+													document.medicine.strips.value="";
+													
+													$("#ddlunit").html("<option value=''>- Medicine Unit -</option><option value='Box'>Box</option><option value='Strips'>Strips</option><option value='Tablets'>Tablet</option>");
+
+												}
+												else if(document.medicine.medtype.selectedIndex==3 || document.medicine.medtype.selectedIndex==6 || document.medicine.medtype.selectedIndex==7 ||document.medicine.medtype.selectedIndex==8)
+												{
+													
+												t21.style.display="inline";
+												t22.style.display="inline";
+
+												document.medicine.bottle.value="1";
+													document.medicine.ml.value="";
+												$("#ddlunit").html("<option value=''>- Medicine Unit -</option><option value='Bottle'>Bottle</option>");
+												
+												}
+												else if (document.medicine.medtype.selectedIndex==4) 
+												{
+
+													t31.style.display="inline";
+												t32.style.display="inline";
+												document.medicine.boxinjection.value="1";
+												document.medicine.piecesinjection.value="";
+												$("#ddlunit").html("<option value=''>- Medicine Unit -</option><option value='Box'>Box</option><option value='Pieces'>Pieces</option>");
+												}
+												else if(document.medicine.medtype.selectedIndex==5)
+												{
+													t41.style.display="inline";
+												t42.style.display="inline";
+												document.medicine.pow.value="1";
+												document.medicine.gram.value="";
+												$("#ddlunit").html("<option value=''>- Medicine Unit -</option><option value='Bottle'>Bottle</option>");
+												
+												}
+												else
+												{
+												$("#ddlunit").html("<option value=''>- Medicine Unit -</option><option value='Pieces'>Pieces</option>");
+												
+												}	
+												}
+										
+
+										function calculateamount()
+										{
+											var q=document.medicine.qyt.value;
+											var r=document.medicine.rate.value;
+											amt=q*r;
+											if(document.medicine.discount.checked==true)
+											{
+												var d=document.medicine.dis.value;
+												var amt=amt-((amt*d)/100);
+												
+											}
+											if(document.medicine.gstcheck.checked==true)
+											{
+												var g=document.medicine.gst.value;
+												var gt=(amt*g)/100;
+												amt=amt+gt;		
+											}
+											document.medicine.amount.value=amt;
+
+										}
+										var colIndex=3;
+
+																		</script>
+
+							<!-- Header -->
+								<header id="header">
+									<strong style="font-size: 20px;">Manage Medicines</strong>
+								</header>
+
+							
+										<div class="row gtr-200">
+							
+											<div class="col-6 col-12-medium">
+
+											
+
+												<!-- Form -->
+													<br><br>
+													<h3>ADD MEDICINES</h3>
+													<form method="post" action="managestock.php" name="medicine" onsubmit="return checkval();">
+														<div class="row gtr-uniform">
+															
+														<div class="col-12">
+																<b>Batch No.: </b>
+																<input type="text" name="bid" id="bid" value='<?php isset($batchno)?print $batchno:print ""; ?>' placeholder="Batch No." <?php isset($batchno)?print "readonly":print ""; ?> required="" />
+															</div>
+															<div class="col-12">
+																<b>Medicine Name: </b>
+																<input type="text" name="mname" id="mname" value='<?php isset($medname)?print $medname:print ""; ?>' placeholder="Medicine Name" required="" />
+															</div>
+																<div class="col-12">
+																<b>Type :</b>
+																<select name="medtype" id="demo-category" required onchange="selected();">
+																	<option value="" selected="">- Medicine Type -</option>
+																	<option value="Tablet" <?php isset($t)&&$t=="Tablet"?print "selected":print ""; ?> >Tablet</option>
+																	<option value="Capsules" <?php isset($t)&&$t=="Capsules"?print "selected":print ""; ?>>Capsules</option>
+																	<option value="Syrup" <?php isset($t)&&$t=="Syrup"?print "selected":print ""; ?>>Syrup</option>
+																	<option value="Injection" <?php isset($t)&&$t=="Injection"?print "selected":print ""; ?>>Injection</option>
+																	<option value="Powder" <?php isset($t)&&$t=="Powder"?print "selected":print ""; ?>>Powder</option>
+																	<option value="Spray" <?php isset($t)&&$t=="Spray"?print "selected":print ""; ?>>Spray</option>
+																	<option value="Gell" <?php isset($t)&&$t=="Gell"?print "selected":print ""; ?>>Gell</option>
+																	<option value="Lotion" <?php isset($t)&&$t=="Lotion"?print "selected":print ""; ?>>Lotion</option>
+																	<option value="Others" <?php isset($t)&&$t=="Others"?print "selected":print ""; ?>>Others</option>
+																</select>
+
+													
+															</div>
+															<div class="col-4" id="t11" style='display: <?php (isset($t)&&($t=="Tablet"||$t=="Capsules"))?print "inline":print "none";?>'>
+														
+															<b>Box:</b>
+															<input type="text" name="box" placeholder="Box" value='<?php isset($unit1)?print $unit1:print "1";?>' pattern="^[1-9]\d*$">
+															
+															</div >
+															<div class="col-4" id="t12" style='display: <?php (isset($t)&&($t=="Tablet"||$t=="Capsules"))?print "inline":print "none";?>'>
+																	<b>Strips(per box):</b>
+															<input type="text" name="strips" placeholder="Strips" value='<?php isset($unit2)?print $unit2:print "";?>' pattern="^[1-9]\d*$">
+														
+															</div>
+															<div class="col-4" id="t13" style='display: <?php (isset($t)&&($t=="Tablet"||$t=="Capsules"))?print "inline":print "none";?>'>
+																<b>Tablets(per strip)</b>
+															<input type="text" name="tablets" value='<?php isset($unit3)?print $unit3:print "";?>' placeholder="tablets" pattern="^[1-9]\d*$">
+															
+															</div>
+															<div class="col-6"id="t21" style='display:<?php (isset($t)&&($t=="Lotion"||$t=="Syrup"||$t=="Gell"||$t=="Spray"))?print "inline":print "none";?>'>	
+															<b>Bottle:</b>
+															<input type="text" name="bottle" placeholder="Bottle" value='<?php isset($unit1)?print $unit1:print "1";?>'  pattern="^[1-9]\d*$">
+															
+															</div >
+															<div class="col-6" id="t22" style='display:<?php (isset($t) && ($t=="Lotion"||$t=="Syrup"||$t=="Gell"||$t=="Spray"))?print "inline":print "none";?>'>	
+															<b>ML(per bottle):</b>
+															<input type="text" name="ml" value='<?php isset($unit2)?print $unit2:print "";?>'  placeholder="Ml" pattern="^[1-9]\d*$">
+															
+															</div >
+															<div class="col-6" id="t31" style='display:<?php (isset($t)&&$t=="Injection")?print "inline":print "none";?>'>	
+															<b>Box:</b>
+															<input type="text" name="boxinjection" value='<?php isset($unit1)?print $unit1:print "1";?>' placeholder="Box" pattern="^[1-9]\d*$">
+															
+															</div >
+															<div class="col-6" id="t32" style='display:<?php (isset($t)&&$t=="Injection")?print "inline":print "none";?>'>	
+															<b>Pieces:</b>
+															<input type="text" name="piecesinjection" value='<?php isset($unit2)?print $unit2:print "";?>'  placeholder="Pieces" pattern="^[1-9]\d*$">
+															
+															</div >
+																
+															<div class="col-6" id="t41" style='display:<?php (isset($t)&&$t=="Powder")?print "inline":print"none";?>'>	
+															<b>Bottle:</b>
+															<input type="text" value='<?php isset($unit1)?print $unit1:print "1";?>'  name="pow" placeholder="Bottle" pattern="^[1-9]\d*$">
+															
+															</div >
+															<div class="col-6" id="t42" style="display: <?php (isset($t)&&$t=="Powder")?print "inline":print"none";?>">	
+															<b>Gram(per bottle):</b>
+															<input type="text" name="gram"  value='<?php isset($unit2)?print $unit2:print "";?>' placeholder="Gram" pattern="^[1-9]\d*$">
+															
+															</div >
+														
+															<div class="col-12">
+																<b>Company Name :</b>
+																<input type="text" name="comname" id="comname" value='<?php isset($comname)?print $comname:print ""; ?>' placeholder="Company Name" required/>
+															</div>
+															<div class="col-12">
+																<b>Generic Name: </b>
+																<input type="text" name="gname" id="gname" value='<?php isset($gname)?print $gname:print ""; ?>' placeholder="Generic Name" required/>
+															</div>
+															<div class="col-12">
+																<b>Unit:</b>
+																<select name="unit" id="ddlunit" required>
+																	<option value="">- Medicine Unit -</option>
+
+																	<?php
+																	if(isset($t) && $t=="Tablet"||$t=="Capsules")
+																	{
+																		if($unit=="Box")
+																		{
+																		echo "<option value='Box' selected>Box</option><option value='Strips'>Strips</option><option value='Tablets'>Tablet</option>";
+																		}
+																		else if($unit=="Strips")
+																		{
+																		echo "<option value='Box' >Box</option><option value='Strips' selected>Strips</option><option value='Tablets'>Tablet</option>";
+																			
+																		}
+																		else if($unit=="Tablet")
+																		{
+																		echo "<option value='Box' >Box</option><option value='Strips' >Strips</option><option value='Tablets' selected>Tablet</option>";
+																			
+																		}
+																		else
+																		{
+
+																		echo "<option value='Box' >Box</option><option value='Strips' >Strips</option><option value='Tablets'>Tablet</option>";
+																		}
+
+																	}
+																else if (isset($t)&&$t=="Lotion"||$t=="Syrup"||$t=="Gell"||$t=="Spray") {
+
+																	if($unit=="Bottle")
+																	{
+																	echo "<option value='Bottle' selected>Bottle</option>";
+																}
+																else
+																{
+																echo "<option value='Bottle'>Bottle</option>";
+																	
+																}
+																}
+																else if(isset($t)&&$t=="Injection")
+																{
+																	if($unit=="Bottle")
+																	{
+																	echo "<option value='Box' selected> Box</option><option value='Pieces'>Pieces</option>";
+																}
+																	else if($unit=="Pieces")
+																	{
+																	echo "<option value='Box' > Box</option><option value='Pieces' selected>Pieces</option>";
+																}
+																else
+																{
+																echo "<option value='Box' > Box</option><option value='Pieces'>Pieces</option>";
+																	
+																}
+
+															}
+																else if(isset($t)&&$t=="Powder")
+																{
+																	if($unit=="Bottle")
+																	{
+																	
+																	echo "<option value='Bottle' selected>Bottle</option>";
+																}
+																else{
+																	echo "<option value='Bottle'>Bottle</option>";
+																}
+																}
+																else if(isset($t)&&$t=="Others")
+																{
+																	if($unit=="Pieces")
+																	{
+																	echo "<option value='Pieces'selected>Pieces</option>";
+																}
+																else
+																{
+																echo "<option value='Pieces' >Pieces</option>";
+																	
+																}
+																}
+																?>
+																	
+																						
+																</select>						
+															</div>
+															<div class="col-12">
+																<b>MRP: </b>
+																<input type="text" name="mrp" id="mrp" value='<?php isset($mrp)?print $mrp:print ""; ?>' placeholder="MRP(price on box)" required pattern="^[1-9]\d*(\.\d+)?$" />
+															</div>
+															<div class="col-12">
+																<b>Quantity: </b>
+																<input type="text" name="qyt" id="qyt" value='<?php isset($qyt)?print $qyt:print ""; ?>' placeholder="Quantity" required pattern="\d{1,5}" maxlength="5" onchange="calculateamount();" />
+															</div>
+															<div class="col-12">
+																<b>Rate: </b>
+																<input type="text" name="rate" id="rate" value='<?php isset($rate)?print $rate:print ""; ?>' placeholder="Rate(Purchased Amount)" required required pattern="^[1-9]\d*(\.\d+)?$" maxlength="5" onchange="calculateamount();"/>
+															</div>
+															
+															<div class="col-6 col-12-small">
+
+																<input type="checkbox" id="discount" name="discount" <?php (isset($dis)&&$dis>0)?print "checked":print ""; ?> onchange="getdiscount(this.checked);">
+																<label for="discount">Discount</label>
+															</div>
+															<div id="d1" class="col-6 col-12-small" style="display: <?php (isset($dis) && $dis>0)?print 'inline':print 'none'; ?>">
+																<b>Discount(%)</b>
+																<input type="text" name="dis"  placeholder="Discount(%)" maxlength="3"  value='<?php isset($dis)?print $dis:print ""; ?>' onchange="calculateamount();"/>
+															</div>
+
+															<div class="col-6 col-12-small">
+
+																<input type="checkbox" id="gstcheck" name="gstcheck" <?php (isset($gst)&&$gst>0)?print "checked":print ""; ?> onchange="getgst(this.checked);" >
+																<label for="gstcheck">GST</label>
+															</div>
+															<div id="d2" class="col-6 col-12-small" style="display: <?php (isset($gst) && $gst>0)?print 'inline':print 'none'; ?>">
+																<b>GST(%)</b>
+																<input type="text" name="gst" placeholder="GST(%)" value='<?php isset($gst)?print $gst:print ""; ?>' maxlength="3" onchange="calculateamount();"/>
+															</div>
+															<div class="col-12">
+																<b>Amount: </b>
+																<input type="text" name="amount" id="amount" value='<?php isset($amount)?print $amount:print ""; ?>' placeholder="Amount" required required pattern="^[1-9]\d*(\.\d+)?$" maxlength="5" />
+															</div>
+															<div class="col-12">
+																<b>Manufacture Date: </b>
+																<input type="Date"  class="mydate" name="mdate" id="mdate" value='<?php isset($mdate)?print $mdate:print ""; ?>' placeholder="Manufacture Date" required />
+															</div>
+																<div class="col-12">
+																<b>Expiry Date: </b>
+																<input type="date" class="mydate" name="expdate" value='<?php isset($expdate)?print $expdate:print ""; ?>' id="expdate" value="" placeholder="Expiry Date" required/>
+															</div>
+															<div class="col-12">
+																<b>Details :</b>
+																<textarea type="text" name="details" id="details" style="resize: none;" placeholder="Details" required><?php isset($details)?print $details:print ""; ?></textarea>
+															</div>
+															<div class="col-12">
+																<b>Supplier:</b>
+																<select name="supplier" id="supplier" value='<?php isset($sup)?print $sup:print ""; ?>'>
+																	<option value="">-Select Supplier-</option>
+																</select>
+
+													
+															</div>
+															
+															
+															<!-- Break -->
+															<div class="col-3">
+																<ul class="actions">
+																	<li><input type="submit" value='<?php isset($store)?print "Update":print "Save"; ?>' class="primary" name="btnsave" /></li>
+																	
+																</ul>
+															</div>
+																<div class="col-3">
+																<ul class="actions">
+																	<li><input type="button" value="Cancel" class="primary" name="btncancel" formnovalidate="" onclick="location.href='homepage.php';" /></li>
+																	
+																</ul>
+															</div>
+
+
+															<!-- Break -->
+															
+														</div>
+														
+													</form>
+													<hr>
+													<h3>Search Medicine</h3>
+													<form method="post" action="" >
+														<div class="row gtr-uniform">
+															
+														<div class="col-6 col-12-small">
+																<input type="radio" id="demo-priority-low" checked="" value="byname" name="searchcheck" onclick="colIndex=3;searchtxt.placeholder='Search By Name';" <?php (isset($_POST["searchcheck"]) && $_POST["searchcheck"]=="byname")?print "checked":print ""; ?> >
+																<label for="demo-priority-low">By Medicine Name.</label>
+															</div>
+															<div class="col-6 col-12-small">
+																<input type="radio" id="demo-priority-normal" value="byid" name="searchcheck"  onclick="colIndex=2;searchtxt.placeholder='Search By Batch No.';" <?php (isset($_POST["searchcheck"]) && $_POST["searchcheck"]=="byid")?print "checked":print ""; ?> >
+																<label for="demo-priority-normal">By Batch No.</label>
+															</div>
+
+															</div>
+												<br>
+													<section id="search" class="alt">
+									
+										<input type="text" name="searchtxt" id="searchtxt" onkeyup="myFunction();" placeholder="Search By Name" value='<?php isset($_POST["searchtxt"])?print $_POST["searchtxt"]:print ""; ?>' />
+
+									
+								</section>
+							
+								<br>	</form>
+</div>
+
+										</div>
+									<?php
+									if(!isset($_POST["btnsearch"]))
+									{
+									$query="select batch_no,medicine_name,company_name,type,quantity,rate,amount,mrp,unit,expiry_date from medicine_tbl where storekeeper_id=?";
+									$result=$con->prepare($query);
+									$result->bind_param("s",$_SESSION["sname"]);
+									$result->execute();
+									$result->bind_result($bno,$medname,$cname,$type,$qyt,$rate,$amt,$mrp,$unit,$expdt);
+									$result->store_result();
+									}
+									else
+									{									
+										$radioval=$_POST["searchcheck"];
+
+											if($radioval=="byname")	
+												{
+												$srch="%". $_POST["searchtxt"]. "%";
+										$query="select batch_no,medicine_name,company_name,type,quantity,rate,amount,mrp,unit,expiry_date from medicine_tbl where storekeeper_id=? and medicine_name like ?";
+										$result=$con->prepare($query);
+										$result->bind_param("ss",$_SESSION["sname"],$srch);
+										$result->execute();
+										$result->bind_result($bno,$medname,$cname,$type,$qyt,$rate,$amt,$mrp,$unit,$expdt);
+										$result->store_result();
+										}
+											else
+											{
+												$srch="%".$_POST["searchtxt"]."%";
+										$query="select batch_no,medicine_name,company_name,type,quantity,rate,amount,mrp,unit,expiry_date from medicine_tbl where storekeeper_id=? and batch_no like ?";
+										$result=$con->prepare($query);
+										$result->bind_param("ss",$_SESSION["sname"],$srch);
+										$result->execute();
+										$result->bind_result($bno,$medname,$cname,$type,$qyt,$rate,$amt,$mrp,$unit,$expdt);
+										$result->store_result();
+
+											}
+									}
+									?>
+
+													<div class="table-wrapper">
+														<?php
+														if($result->num_rows>0)
+														{
+
+
+														?>
+														<table class="alt" id="myTable">
+
+															<thead>
+																<tr>
+																	<th></th>
+																	<th></th>
+																	<th>Batch No</th>
+																	<th>Medicine Name</th>
+																	<th>Type</th>
+																	<th>Company Name</th>
+																	<th>Quantity</th>
+																	<th>Rate</th>
+																	
+																	<th>Amount</th>
+																	<th>MRP</th>
+																	<th>Unit</th>
+																	
+																	<th>Expiry date</th>
+																<th></th>
+																</tr>
+															</thead>
+															<tbody>
+																<?php
+																if(isset($result))
+																{
+																	while($result->fetch())
+																	{
+																		?>
+																<tr>
+																	<td><a href="managestock.php?bno=<?php echo $bno; ?>">Edit</a></td>
+																	<td><a style="cursor: pointer;" onclick="btndel('<?php echo $bno; ?>');">Delete</a></td>
+																	
+																	<td><?php echo $bno; ?></td>
+																	<td><?php echo $medname; ?></td>
+																	<td><?php echo $type; ?></td>
+																	<td><?php echo $cname; ?></td>
+																	<td><?php echo $qyt; ?></td>
+																	
+																	<td><?php echo $rate; ?></td>	
+																	<td><?php echo $amt; ?></td>
+																	<td><?php echo $mrp; ?></td>
+																	<td><?php echo $unit; ?></td>
+																				
+																	<td><?php echo $expdt; ?></td>			
+																</tr>
+																<?php
+															}
+														}
+																?>
+																
+															</tbody>
+															
+														</table>
+														<h3 id="tcount"></h3>
+														<?php
+														}
+														else
+														{
+															echo "<center><h1>No Medicine Found</h1></center>";
+														}
+														?>
+													</div>
+
+													<script type="text/javascript">
+														function btndel(bno)
+														{
+
+															$.ajax({
+																url:"deletemedicine.php",
+																type:"post",
+																data: {bno : bno},
+																success:function(response)
+																{
+																	alert(response);
+																	location.reload();
+																}
+															});
+
+														}
+													</script>
+											
+
+								
+
+						</div>
+					</div>
+
+<script>
+function myFunction() {
+  // Declare variables
+  var input, filter, table, tr, td, i, txtValue;
+  input = document.getElementById("searchtxt");
+  filter = input.value.toUpperCase();
+  table = document.getElementById("myTable");
+  tr = table.getElementsByTagName("tr");
+  // Loop through all table rows, and hide those who don't match the search query
+  var count=0;
+  for (i = 0; i < tr.length; i++) {
+    td = tr[i].getElementsByTagName("td")[colIndex];
+    if (td) {
+      txtValue = td.textContent || td.innerText;
+      if (txtValue.toUpperCase().indexOf(filter) > -1) {
+        tr[i].style.display = "";
+        count++;
+      } else {
+        tr[i].style.display = "none";
+      }  
+    }
+  }
+  if(count==0)
+  {
+  	tcount.innerHTML="No Records Found";
+  }
+  else
+  {
+  tcount.innerHTML="no of records found : "+count+" out of "+(tr.length-1);
+	}
+}
+</script>
+				<!-- Sidebar -->
+					<div id="sidebar">
+						<div class="inner">
+
+							<!-- Search -->
+							
+
+							<!-- Menu -->
+								<nav id="menu">
+									<header class="major">
+										<h2>Menu</h2>
+									</header>
+									<ul>
+										<li><a href="homepage.php">Homepage</a></li>
+										<li><a href="managestock.php">Manage Stocks</a></li>
+										<li><a href="supplier.php">Manage Suppliers</a></li>
+										<li>
+											<span class="opener">Purchase Medicine</span>
+											<ul>
+												
+												<li><a href="purchase.php">New Purchase</a></li>
+												<li><a href="purchaseview.php">View Purchase</a></li>
+												<li><a href="updatepurchase.php">Update Purchase</a></li>
+											</ul>
+										</li>
+										<li>
+											<span class="opener">Return Purchase</span>
+											<ul>
+												
+												<li><a href="returnpurchase.php">Return Purchase</a></li>
+												<li><a href="returnpurchaseview.php">Return View Purchase</a></li>
+											</ul>
+										</li>
+										
+										<li>
+											<span class="opener">Sales Medicine</span>
+											<ul>
+												
+												<li><a href="sales.php">New Sales</a></li>
+												<li><a href="salesview.php">View Sales</a></li>
+												<li><a href="updatesales.php">Update Sales</a></li>
+											</ul>
+										</li>
+										<li>
+											<span class="opener">Return Sales</span>
+											<ul>
+												<li><a href="returnsales.php">Return Sales</a></li>
+												<li><a href="returnsalesview.php">Return View Sales</a></li>
+											</ul>
+										</li>
+										<li><a href="bill.php">View Bills</a></li>
+										<li>
+										<span class="opener">Reports</span>
+											<ul>
+												
+												<li><a href="pay.php">Outstanding Payable</a></li>
+												<li><a href="recieve.php">Outstanding Recievable</a></li>
+											</ul>
+											</li>
+											<li><a href="stocksummary.php">Stock Summary</a></li>
+											<li><a href="chart.php">Analysis</a></li>
+										<li><a href="login.php">Logout</a></li>
+										
+									</ul>
+								</nav>
+
+							<!-- Section -->
+								
+							<!-- Footer -->
+								<footer id="footer">
+									<p class="copyright">&copy; Medicament@2020 .All rights reserved.</p>
+
+						</div>
+					</div>
+
+			</div>
+
+		<!-- Scripts -->
+			<script src="assets/js/jquery.min.js"></script>
+			<script src="assets/js/browser.min.js"></script>
+			<script src="assets/js/breakpoints.min.js"></script>
+			<script src="assets/js/util.js"></script>
+			<script src="assets/js/main.js"></script>
+
+	</body>
+</html>

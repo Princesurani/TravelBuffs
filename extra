@@ -1,0 +1,120 @@
+<nav class="navbar  navbar-expand-lg navbar-dark bg-dark">
+        <a class="navbar-brand" href="#">
+        <img class="mx-2 imgb" src="https://see.fontimg.com/api/renderfont4/YdKj/eyJyIjoiZnMiLCJoIjo0MywidyI6MTI1MCwiZnMiOjM0LCJmZ2MiOiIjRjJGNUY5IiwiYmdjIjoiIzFCMkQ0NCIsInQiOjF9/VHJhdmVsQnVmZnM/countryside.png" alt="Lettering fonts"></a>
+        <!-- <a href="https://www.fontspace.com/category/lettering"><img class="mx-2 imgb" src="https://see.fontimg.com/api/renderfont4/YdKj/eyJyIjoiZnMiLCJoIjo3MSwidyI6MTI1MCwiZnMiOjU3LCJmZ2MiOiIjODhCN0RCIiwiYmdjIjoiIzE2Mjk0MiIsInQiOjF9/VHJhdmVsQnVmZnM/countryside.png" alt="Lettering fonts"></a> -->
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item active">
+                    <a class="nav-link" href="Home.php">Home <span class="sr-only">(current)</span></a>
+                </li>
+
+
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
+                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Explore
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <a class="dropdown-item" href="./Explores/Places.php">Places</a>
+                        <a class="dropdown-item" href="./Explores/Beaches.php">Beaches</a>
+                        <a class="dropdown-item" href="./Explores/Mountain.php">Mountains</a>
+                    </div>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link " href="Packages.php">Packages</a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" href="About.php">About</a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" href="Contact.php">Contact Us</a>
+                </li>
+            </ul>
+            
+            <div class="mx-2">
+            <a href="login.php"><button class="btn btn-primary"> Login/Sign up </button></a>
+                
+            </div>
+        </div>
+    </nav>
+
+
+
+
+     <!-- <style>
+        .navbar {
+            padding-top: 10px;
+            padding-bottom: 10px;
+            font-family: Cambria;
+            font-size: 18px;
+        }
+        .navbar-brand{
+            font-size: 25px;
+        }
+
+        .text{
+            margin-top:20px;
+            font-family: Cambria;
+        }
+        
+        .container{
+            max-width: 1300px;
+        }
+
+        .imgb{
+            width:120px;
+            height: 35px;
+        }
+
+    </style> -->
+
+<!-- <script>
+        function check1()
+        {
+            var repass = /^[A_Za-z0-9._@-]{8,15}$/;
+            var msg="";
+
+            
+            
+            if(form1.password.value.length==0)
+                msg += "Empty password ! ";
+            else if (!repass.test(form1.password.value))
+                msg += "invalid password  !\nPassword must have min 8 charcters and should containing uppqecase lowercase and special characters";
+
+            if (msg != "") {
+                alert(msg);
+                return false;
+            }
+            return true;
+        }
+
+        function check2()
+        {
+            var repass2 = /^[A_Za-z0-9._@-]{8,15}$/;
+            var msg2="";
+            var pass1=form2.password2.value;
+            var pass2=form2.confirmpassword.value;
+
+            if(form2.password2.value.length==0)
+                msg2 += "Empty password ! ";
+            else if (!repass2.test(form2.password2.value))
+                msg2 += "invalid password!"
+            else if (form2.confirmpassword.value.length==0)
+                msg2 += "Cofirm password is required!";
+            else if (pass1 != pass2)
+                msg2 += "Password doesn't match!";
+            
+
+            if (msg2 != "") {
+                alert(msg2);
+                return false;
+            }
+            return true;
+        }
+        
+
+
+    </script> -->

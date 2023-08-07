@@ -1,0 +1,90 @@
+/* *{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+body{
+    display: flex;
+    flex-direction: column;
+}
+
+.container{
+    display: grid;
+    grid-template-columns: repeat(auto-fit,minmax(290px,1fr));
+    grid-gap: 30px;
+    padding: 20px;
+    font-family: cursive;
+    padding-left: 1cm;
+    min-width: 1400px;
+    
+}
+.container .box{
+    height: 500px;
+    box-shadow: 0 30px 30px rgba(0, 0, 0, 0.4);
+    overflow: hidden;
+    text-align: center;
+    border-radius: 10px;
+    margin-top: 100px;
+}
+
+.box:hover{
+    transform: scale(1.02);
+    box-shadow: 0px 0px 10px 0px;
+}
+
+.container .box::before{
+    position: absolute;
+    content:"";
+    top: 99%;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #1115eb;
+    background-image: linear-gradient(315deg,#1132eb 0%,#0f0cb0 74%);
+    transition: 0.4s;
+}
+.container .box:hover::before{
+    top: 50%;
+}
+.container .box .imgbox{
+    width: 100%;
+    height: 50%;
+}
+.container .box .imgbox img{
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+.container .box h1{
+    font-size: 20px;
+    position: relative;
+}
+.container .box p{
+    margin: 10px 0;
+    font-size: 14px;
+    position: relative;
+}
+.container .box:hover h1{
+    color: white;
+}
+.container .box:hover p{
+    color: white;
+}
+.container .box .btn{
+    margin: 30px auto;
+}
+.container .box .btn a{
+    background-color: blue;
+    color: white;
+    text-decoration: none;
+    width: 40%;
+    padding: 10px 12px;
+    border-radius: 10px;
+    position: relative;
+    margin: 30px auto;
+}
+.container .box:hover .btn a{
+    background-color: white;
+    color: #1c0cb0;
+}
+ */

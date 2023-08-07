@@ -1,0 +1,158 @@
+/* *{
+    margin: 0;
+    padding: 0;
+}
+
+.pics .responsive{
+    width: 100%;
+    height: 500px;
+}
+.head{
+    margin: 16px 0px 10px 10px;
+}
+
+.links{
+    margin: 30px 0px 10px 0px;
+    padding: 1px;
+}
+.links .btn{
+    margin: 5px 5px;
+    background-color: #eb4511;
+    padding: 5px 15px;
+    border-radius: 8px;
+    text-decoration: none;
+    color: #fff;
+}
+.info{
+    margin: 25px 0;
+    padding: 10px;
+}
+.info p{
+    margin: 20px 2px;
+}
+.other{
+    display: flex;
+    max-width: 900px;
+    margin:20px 0 20px 20px;
+    padding: 0 15px;
+    text-align: center;
+}
+.other ul{
+    text-align: left;
+}
+.other h2{
+    color: #eb4511;
+    font-size: 18px;
+    text-align: left;
+    line-height: 34px;
+    padding: 15px 15px 0;
+    text-transform: none;
+    letter-spacing: 1px;
+    font-weight: 600;
+    display: block;
+    margin: 0;
+    cursor: pointer;
+    transition: 0.2s;
+}
+.other p{
+    color: #fff;
+    text-align: left;
+    font-size: 15px;
+    line-height:1.45;
+    position: relative;
+    overflow: hidden;
+    max-height: 250px;
+    will-change: max-height;
+    contain: layout;
+    display: inline-block;
+    opacity: 1;
+    transform: translate(0,0);
+    margin: 50 50px 0 15px;
+    transition: 0.3s opacity, 0.6s max-height;
+    hyphens: auto;
+    -webkit-hyphens: auto;
+    -ms-hyphens: auto;
+    z-index: 2;
+    padding: 5px 10px;
+}
+.other ul{
+    list-style: none;
+    perspective: 900;
+    padding: 0;
+    margin: 0;
+}
+.other ul li{
+    position: relative;
+    overflow: hidden;
+    padding: 0;
+    margin: 0;
+    background: #30475e;
+    box-shadow: 0 3px 10px -2px rgba(0,0,0,0.1);
+    -webkit-tap-highlight-color: transparent;
+    border-radius: 4px;
+}
+.other ul li + li{
+    margin-top: 15px;
+}
+.other ul li:last-of-type{
+    padding-bottom: 0;
+}
+.other ul li i{
+    position: absolute;
+    transform: translate(-6px,0);
+    margin-top: 28px;
+    right: 15px;
+}
+.other ul li i:before, ul li i:after{
+    content: "";
+    position: absolute;
+    background-color: #f05454;
+    width: 3px;
+    height: 9px;
+
+}
+.other ul li i:before{
+    transform: translate(2px,0) rotate(45deg);
+    
+}
+.other ul li i:after{
+    transform: translate(-2px,0) rotate(-45deg);
+}
+.other ul li input[type=checkbox]{
+    position: absolute;
+    cursor:pointer;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+    opacity: 0;
+    touch-action: manipulation;
+}
+.other ul li input[type=checkbox]:checked ~ h2{
+    color: #fff;
+}
+.other ul li input[type=checkbox]:checked ~ p{
+
+    margin: 0;
+    max-height: 0;
+    transition: 0.3s;
+    opacity: 0;
+}
+.other ul li input[type=checkbox]:checked ~ i:before{
+    transform: translate(2px,0) rotate(45deg);
+    background-color: #fff;
+}
+.other ul li input[type=checkbox]:checked ~ i:after{
+    transform: translate(-2px,0) rotate(-45deg);
+    background-color: #fff;
+}
+.transition,p,ul li i:after{
+    transition: all 0.3s;
+}
+.contain{
+    display: flex;
+    flex-wrap: wrap;
+}
+iframe{
+    margin: 20px 5px 20px 5px;
+}
+ */
